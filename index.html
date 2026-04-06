@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary-fixed-dim": "#ff5b4b",
+          "surface-container-low": "#131313",
+          "surface-container-high": "#201f1f",
+          "primary-dim": "#e2241f",
+          "inverse-primary": "#c1000a",
+          "on-secondary-container": "#d2d0cf",
+          "on-primary-fixed-variant": "#610002",
+          "surface-container": "#1a1919",
+          "on-error-container": "#ffb2b9",
+          "primary-fixed": "#ff7767",
+          "secondary-container": "#474746",
+          "surface-container-highest": "#262626",
+          "on-primary-container": "#4f0001",
+          "tertiary": "#ff7163",
+          "on-tertiary-fixed-variant": "#7a0005",
+          "error": "#ff6e84",
+          "on-surface-variant": "#adaaaa",
+          "background": "#0e0e0e",
+          "surface-tint": "#ff8e80",
+          "error-container": "#a70138",
+          "surface-dim": "#0e0e0e",
+          "on-error": "#490013",
+          "on-surface": "#ffffff",
+          "surface-variant": "#262626",
+          "secondary-fixed": "#e5e2e1",
+          "on-primary": "#650002",
+          "on-tertiary-fixed": "#3a0001",
+          "on-secondary-fixed": "#403f3f",
+          "on-secondary-fixed-variant": "#5c5b5b",
+          "surface-bright": "#2c2c2c",
+          "outline": "#767575",
+          "tertiary-dim": "#de2d26",
+          "secondary-dim": "#d6d4d3",
+          "primary-container": "#ff7767",
+          "surface-container-lowest": "#000000",
+          "primary": "#ff8e80",
+          "secondary-fixed-dim": "#d6d4d3",
+          "outline-variant": "#484847",
+          "tertiary-fixed": "#ff9285",
+          "inverse-on-surface": "#565555",
+          "on-secondary": "#525151",
+          "tertiary-fixed-dim": "#ff7b6d",
+          "on-tertiary": "#4a0002",
+          "on-primary-fixed": "#000000",
+          "tertiary-container": "#e6322b",
+          "on-tertiary-container": "#000000",
+          "error-dim": "#d73357",
+          "surface": "#0e0e0e",
+          "inverse-surface": "#fcf9f8",
+          "secondary": "#e5e2e1",
+          "on-background": "#ffffff"
+        },
+        fontFamily: {
+          "headline": ["Plus Jakarta Sans"],
+          "body": ["Manrope"],
+          "label": ["Manrope"]
+        },
+        borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .glass-card {
+    background: rgba(38, 38, 38, 0.4);
+    backdrop-filter: blur(20px);
+  }
+  .text-glow {
+    text-shadow: 0 0 30px rgba(255, 142, 128, 0.3);
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, #ff5b4b, #e2241f);
+    color: #000;
+  }
+  .tab-btn { transition: all 0.3s ease; }
+  .project-panel { display: none; }
+  .project-panel.active { display: block; }
+
+  /* ── Project card content padding: tight on mobile, generous on desktop ── */
+  .proj-content { padding: 1.25rem; }
+  @media (min-width: 640px)  { .proj-content { padding: 2rem; } }
+  @media (min-width: 1024px) { .proj-content { padding: 3rem; } }
+
+  /* ── Project card image: fixed height on mobile, full-height on desktop ── */
+  .proj-img { min-height: 180px; }
+  @media (min-width: 640px)  { .proj-img { min-height: 220px; } }
+  @media (min-width: 1024px) { .proj-img { min-height: 100%; } }
+
+  /* ── Section heading sizes ── */
+  .section-title { font-size: clamp(1.6rem, 5vw, 2.5rem); }
+
+  /* ── Cert cards: force flex-col on xs ── */
+  @media (max-width: 480px) {
+    .cert-card { flex-direction: column; align-items: flex-start !important; }
+  }
+
+  /* ── CTA section: tighter padding on mobile ── */
+  .cta-inner { padding: 2rem 1.25rem; }
+  @media (min-width: 640px)  { .cta-inner { padding: 3rem 2rem; } }
+  @media (min-width: 1024px) { .cta-inner { padding: 5rem; } }
+
+  /* ── Smooth scroll ── */
+  html { scroll-behavior: smooth; }
+
+  /* ── Prevent horizontal scroll ── */
+  body { overflow-x: hidden; max-width: 100vw; }
+
+  /* ── Reveal Animations ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+  }
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Custom Cursor ── */
+  @media (pointer: fine) {
+    body {
+      cursor: none;
+    }
+    a, button, input, textarea, .glass-card, .group {
+      cursor: none !important;
+    }
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #ff8e80;
+    }
+    .cursor-outline {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ff8e80;
+    }
+    .cursor-dot, .cursor-outline {
+      position: fixed;
+      top: 0;
+      left: 0;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      z-index: 99999;
+      pointer-events: none;
+      transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s, opacity 0.3s;
+    }
+    .cursor-dot.cursor-hover {
+      background-color: transparent;
+      border: 1px solid #ff8e80;
+      transform: translate(-50%, -50%) scale(1.5);
+    }
+    .cursor-outline.cursor-hover {
+      background-color: #ff8e80;
+      opacity: 0.15;
+      transform: translate(-50%, -50%) scale(1.5);
+    }
+  }
+
+  /* ── Chatbot Widget ── */
+  .chat-fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: linear-gradient(135deg, #ff5b4b, #e2241f);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(226,36,31,0.5);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+  }
+  .chat-fab:hover {
+    transform: scale(1.1);
+  }
+  .chat-fab .material-symbols-outlined {
+    color: #000;
+    font-size: 1.5rem;
+  }
+  .chat-window {
+    position: fixed;
+    bottom: 6.5rem;
+    right: 2rem;
+    width: 320px;
+    height: 400px;
+    background: rgba(38, 38, 38, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(118, 117, 117, 0.2);
+    border-radius: 1rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+  }
+  .chat-window.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .chat-header {
+    padding: 1rem;
+    background: #1a1919;
+    border-bottom: 1px solid rgba(118, 117, 117, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .chat-header h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .chat-header h3::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    background: #00ff00;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #00ff00;
+  }
+  .chat-header-close {
+    background: none;
+    border: none;
+    color: #767575;
+    cursor: pointer;
+  }
+  .chat-header-close:hover {
+    color: #fff;
+  }
+  .chat-body::-webkit-scrollbar {
+    width: 6px;
+  }
+  .chat-body::-webkit-scrollbar-thumb {
+    background: #474746;
+    border-radius: 3px;
+  }
+  .chat-body {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .chat-msg {
+    max-width: 80%;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    word-break: break-word;
+  }
+  .msg-bot {
+    background: #1a1919;
+    color: #e5e2e1;
+    align-self: flex-start;
+    border-bottom-left-radius: 0.2rem;
+  }
+  .msg-user {
+    background: #ff5b4b;
+    color: #000;
+    align-self: flex-end;
+    border-bottom-right-radius: 0.2rem;
+    font-weight: 500;
+  }
+  .chat-input-area {
+    padding: 0.75rem;
+    background: #1a1919;
+    border-top: 1px solid rgba(118, 117, 117, 0.2);
+    display: flex;
+    gap: 0.5rem;
+  }
+  .chat-input {
+    flex: 1;
+    background: #262626 !important;
+    border: 1px solid rgba(118, 117, 117, 0.2);
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+    color: #ffffff !important;
+    font-size: 0.85rem;
+    outline: none;
+  }
+  .chat-input::placeholder {
+    color: #9ca3af !important;
+  }
+  .chat-input:focus {
+    border-color: #ff5b4b;
+  }
+  .btn-send {
+    background: #ff5b4b;
+    border: none;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .btn-send:hover {
+    background: #ff8e80;
+  }
+  .chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0 0.5rem 0.5rem 0.5rem;
+  }
+  .suggestion-chip {
+    background: #ff5b4b;
+    color: #000;
+    border: none;
+    border-radius: 1rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .suggestion-chip:hover {
+    background: #ff8e80;
+  }
+  @media (max-width: 480px) {
+    .chat-window {
+      width: calc(100% - 2rem);
+      right: 1rem;
+      left: 1rem;
+      bottom: 5.5rem;
+    }
+    .chat-fab {
+      right: 1rem;
+      bottom: 1rem;
+    }
+  }
+  @keyframes floating {
+    0% { transform: translateY(0px) rotate3d(1, 1, 1, 0deg); }
+    50% { transform: translateY(-12px) rotate3d(1, 1, 1, 1.5deg); }
+    100% { transform: translateY(0px) rotate3d(1, 1, 1, 0deg); }
+  }
+  .animate-float {
+    animation: floating 6s ease-in-out infinite;
+  }
+  #particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  #back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: rgba(226,36,31,0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(226,36,31,0.5);
+    border-radius: 50%;
+    color: #ff5b4b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 990;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+  }
+  #back-to-top.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  #back-to-top:hover {
+    background: rgba(226,36,31,0.8);
+    color: #fff;
+  }
+
+  /* Mascot Sam CSS */
+  @keyframes mascotBounce { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+  @keyframes mascotBlink { 0%,96%,98% { transform: scaleY(1); } 97%,99% { transform: scaleY(0.1); } }
+  @keyframes mascotWaveLeft { 0% { transform: rotate(0deg); } 50% { transform: rotate(-50deg); } 100% { transform: rotate(0deg); } }
+  @keyframes mascotWaveRight { 0% { transform: rotate(0deg); } 50% { transform: rotate(50deg); } 100% { transform: rotate(0deg); } }
+  #mascot-sam {
+    position: absolute;
+    top: 0; left: 0;
+    width: 60px; height: 60px;
+    z-index: 9999;
+    pointer-events: none;
+    transition: transform 3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+  }
+  .sam-scaler { transform: scale(0.8); pointer-events: auto; cursor: pointer; }
+  @media (max-width: 768px) {
+    .sam-scaler { transform: scale(0.6); }
+  }
+  .sam-bouncer { animation: mascotBounce 2s infinite alternate ease-in-out; }
+  .sam-flipper { transition: transform 0.3s; }
+  .sam-body {
+    width: 40px; height: 35px;
+    background: #ff5b4b;
+    border-radius: 40% 40% 10% 10%;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(226,36,31,0.5);
+  }
+  .sam-eye {
+    position: absolute; top: 12px;
+    width: 8px; height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #fff;
+    animation: mascotBlink 4s infinite;
+  }
+  .sam-eye.left { left: 8px; }
+  .sam-eye.right { right: 8px; }
+  .sam-hand {
+    position: absolute; top: 15px;
+    width: 14px; height: 5px;
+    background: #ff5b4b;
+    border-radius: 5px;
+  }
+  .sam-hand.left {
+    left: -10px;
+    transform-origin: right center;
+  }
+  .sam-hand.right {
+    right: -10px;
+    transform-origin: left center;
+  }
+  .waving .sam-hand.left {
+    animation: mascotWaveLeft 0.6s infinite ease-in-out;
+  }
+  .waving .sam-hand.right {
+    animation: mascotWaveRight 0.6s infinite ease-in-out;
+  }
+  .sam-tooltip {
+    position: absolute; top: -35px;
+    background: #fff; color: #000;
+    padding: 6px 10px; border-radius: 8px;
+    font-size: 12px; font-weight: bold;
+    opacity: 0; transition: opacity 0.3s;
+    white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  }
+  .sam-tooltip::after {
+    content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+    border-width: 5px 5px 0; border-style: solid; border-color: #fff transparent transparent;
+  }
+  .show-tooltip .sam-tooltip { opacity: 1; }
+</style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary selection:text-on-primary-fixed overflow-x-hidden">
+
+<!-- Custom Cursor -->
+<div class="cursor-dot md:block hidden" data-cursor-dot></div>
+<div class="cursor-outline md:block hidden" data-cursor-outline></div>
+
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#0e0e0e]/80 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+  <div class="flex justify-between items-center px-8 py-5 max-w-screen-2xl mx-auto">
+    <a class="text-2xl font-black tracking-tighter text-white hover:text-[#ff8e80] transition-colors flex-shrink-0" href="#home">SOM</a>
+    <div class="hidden lg:flex items-center gap-7 xl:gap-9">
+      <a class="nav-link font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-[#ff8e80] border-b-2 border-[#ff8e80] pb-1 hover:scale-105 transition-all duration-300" href="#home">Home</a>
+      <a class="nav-link font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-all hover:scale-105 duration-300" href="#skills">Skills</a>
+      <a class="nav-link font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-all hover:scale-105 duration-300" href="#projects">Projects</a>
+      <a class="nav-link font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-all hover:scale-105 duration-300" href="#education">Education</a>
+      <a class="nav-link font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-all hover:scale-105 duration-300" href="#experience">Experience</a>
+      <a class="nav-link font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-all hover:scale-105 duration-300" href="#achievements">Achievements</a>
+      <a class="nav-link font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-all hover:scale-105 duration-300" href="#certifications">Certifications</a>
+      <a class="nav-link font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-all hover:scale-105 duration-300" href="#looking-for">Looking For</a>
+      <a class="nav-link font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-all hover:scale-105 duration-300" href="#contact">Contact</a>
+    </div>
+    <!-- Mobile hamburger -->
+    <button onclick="toggleMobileMenu()" class="lg:hidden text-gray-400 hover:text-white transition-colors">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden lg:hidden bg-[#0e0e0e]/95 backdrop-blur-xl border-t border-white/5 px-8 py-6">
+    <div class="flex flex-col gap-5">
+      <a onclick="toggleMobileMenu()" class="font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-[#ff8e80]" href="#home">Home</a>
+      <a onclick="toggleMobileMenu()" class="font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-colors" href="#skills">Skills</a>
+      <a onclick="toggleMobileMenu()" class="font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-colors" href="#projects">Projects</a>
+      <a onclick="toggleMobileMenu()" class="font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-colors" href="#education">Education</a>
+      <a onclick="toggleMobileMenu()" class="font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-colors" href="#experience">Experience</a>
+      <a onclick="toggleMobileMenu()" class="font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-colors" href="#achievements">Achievements</a>
+      <a onclick="toggleMobileMenu()" class="font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-colors" href="#certifications">Certifications</a>
+      <a onclick="toggleMobileMenu()" class="font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-colors" href="#looking-for">Looking For</a>
+      <a onclick="toggleMobileMenu()" class="font-['Plus_Jakarta_Sans'] tracking-tighter font-bold uppercase text-xs text-gray-400 hover:text-white transition-colors" href="#contact">Contact</a>
+
+      <!-- Divider -->
+      <div class="h-[1px] bg-white/5 my-1"></div>
+
+      <!-- Connect section -->
+      <p class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-[0.2em] text-gray-600 font-bold">Connect With Me</p>
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/atghrasom/" target="_blank"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-[#E1306C]/10 hover:border-[#E1306C]/30 transition-all group">
+          <svg class="w-4 h-4 flex-shrink-0 text-[#E1306C]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+          <span class="font-['Plus_Jakarta_Sans'] text-xs font-bold text-gray-400 group-hover:text-white transition-colors">Instagram</span>
+        </a>
+        <!-- Twitter / X -->
+        <a href="https://x.com/AthgharaSom" target="_blank"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all group">
+          <svg class="w-4 h-4 flex-shrink-0 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          <span class="font-['Plus_Jakarta_Sans'] text-xs font-bold text-gray-400 group-hover:text-white transition-colors">Twitter / X</span>
+        </a>
+        <!-- LinkedIn -->
+        <a href="https://www.linkedin.com/in/som-athghara-71262122b/" target="_blank"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/30 transition-all group">
+          <svg class="w-4 h-4 flex-shrink-0 text-[#0A66C2]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+          <span class="font-['Plus_Jakarta_Sans'] text-xs font-bold text-gray-400 group-hover:text-white transition-colors">LinkedIn</span>
+        </a>
+        <!-- Phone / WhatsApp -->
+        <a href="tel:+91 9668125271" 
+           class="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-[#25D366]/10 hover:border-[#25D366]/30 transition-all group">
+          <svg class="w-4 h-4 flex-shrink-0 text-[#25D366]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+          </svg>
+          <span class="font-['Plus_Jakarta_Sans'] text-xs font-bold text-gray-400 group-hover:text-white transition-colors">Call / WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="relative pt-20 sm:pt-24 lg:pt-32">
+
+  <!-- Hero Section -->
+  <section id="home" class="relative max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-32 grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+    <div id="particles-js"></div>
+    <div class="lg:col-span-7 space-y-5 sm:space-y-8 z-10 reveal">
+      <div class="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-surface-container-highest rounded-full border border-outline-variant/20">
+        <span class="flex h-2 w-2 rounded-full bg-primary animate-pulse flex-shrink-0"></span>
+        <span class="font-label text-[10px] sm:text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] text-on-surface-variant font-bold">Available for new opportunities</span>
+      </div>
+      <h1 class="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tighter leading-[0.92] text-white">
+        Hi, I'm <br/>
+        <span id="hero-name" class="text-white relative inline-block">Som Athghara —</span> <br/>
+        <span class="text-primary text-glow italic"> Cloud & DevOps</span><br/>
+     Engineer
+      </h1>
+      <p class="font-body text-base sm:text-lg md:text-xl text-on-surface-variant max-w-xl leading-relaxed">
+        I’m a BCA graduate passionate about cloud, DevOps, and data analysis. I have practical experience with AWS, Linux, Docker, CI/CD, Python, and SQL, and I enjoy building scalable and efficient solutions. I like working on projects, exploring new technologies, and continuously improving my skills.
+      </p>
+      <div class="flex flex-col xs:flex-row flex-wrap gap-3 sm:gap-4 pt-2 sm:pt-4">
+        <a href="#projects" class="inline-block bg-gradient-to-br from-primary-fixed-dim to-primary-dim text-on-primary-fixed px-7 sm:px-10 py-4 sm:py-5 rounded-full font-headline font-extrabold uppercase text-xs sm:text-sm tracking-widest hover:shadow-[0_0_30px_rgba(226,36,31,0.4)] transition-all w-full xs:w-auto text-center">
+          View Projects
+        </a>
+        <div class="flex gap-2 w-full xs:w-auto">
+          <a href="https://drive.google.com/file/d/15EnpOIu64U-R5JToq79mSPlD3CUm1vBB/view?usp=drive_link" target="_blank" class="flex-1 inline-block bg-surface-container-highest text-white px-5 py-4 sm:py-5 rounded-full font-headline font-extrabold uppercase text-[10px] sm:text-xs tracking-widest border border-outline-variant/30 hover:bg-surface-container transition-colors text-center">
+            View CV
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="lg:col-span-5 relative mt-6 lg:mt-0 reveal" style="transition-delay: 200ms;">
+      <div class="animate-float aspect-square max-w-xs sm:max-w-sm md:max-w-md lg:max-w-full mx-auto rounded-2xl overflow-hidden bg-surface-container-low border border-outline-variant/10 relative group">
+        <img alt="Som Athghara professional portrait" class="w-full h-full object-cover mix-blend-luminosity hover:mix-blend-normal transition-all duration-700 scale-110 group-hover:scale-100" src="https://media.licdn.com/dms/image/v2/D5603AQF0i5g6hDhoxQ/profile-displayphoto-crop_800_800/B56ZoBQ73CI0AI-/0/1760957809774?e=1776902400&v=beta&t=pJa2gh0pVewfmvR4pQesrI3iuPmWqlR0yBkxhHrNbWI"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
+      </div>
+      <div class="animate-float absolute -bottom-6 -left-4 sm:-bottom-8 sm:-left-8 glass-card p-4 sm:p-6 rounded-xl border border-outline-variant/20 shadow-2xl hidden sm:block" style="animation-delay: 2s;">
+        <div class="flex items-center gap-3 sm:gap-4">
+          <div class="bg-primary/20 p-2 sm:p-3 rounded-lg">
+            <span class="material-symbols-outlined text-primary">cloud_done</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Skills Section -->
+  <section id="skills" class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-12 lg:mb-16">
+      <div>
+        <h2 class="font-headline text-3xl sm:text-4xl font-extrabold tracking-tighter text-white mb-2 sm:mb-4">Technical Skills</h2>
+        <p class="text-on-surface-variant font-body text-sm sm:text-base">Summary of my technical and professional skills.</p>
+      </div>
+      <div class="h-[1px] flex-grow bg-outline-variant/20 hidden md:block mx-12"></div>
+      <div class="font-headline font-black text-4xl sm:text-6xl opacity-10 select-none uppercase">Skills</div>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">01.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">AWS</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">02.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">Linux</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">03.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">Python</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">04.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">SQL</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">05.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">Git</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">06.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">Terraform</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">07.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">Docker</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">08.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">Kubernetes</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">09.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">Azure</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">10.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">Grafana</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">11.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">HTML / CSS</span>
+      </div>
+      <div class="bg-surface-container-low p-4 sm:p-6 rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all flex items-center gap-3">
+        <span class="text-primary font-headline font-bold opacity-50 text-sm sm:text-base flex-shrink-0">12.</span><span class="text-white font-bold tracking-tight uppercase text-xs sm:text-sm">Excel / MySQL</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PROJECTS SECTION ========== -->
+  <section id="projects" class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+
+    <!-- Section Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-12">
+      <div>
+        <h2 class="font-headline text-3xl sm:text-4xl font-extrabold tracking-tighter text-white mb-2 sm:mb-4">Featured Projects</h2>
+        <p class="text-on-surface-variant font-body text-sm sm:text-base">A showcase of my work organized by domain.</p>
+      </div>
+      <div class="h-[1px] flex-grow bg-outline-variant/20 hidden md:block mx-12"></div>
+      <div class="font-headline font-black text-4xl sm:text-6xl opacity-10 select-none uppercase">Work</div>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div class="flex flex-wrap gap-2 sm:gap-3 mb-8 sm:mb-14">
+      <button onclick="switchTab('cloud')" id="tab-cloud" class="tab-btn active px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-headline font-bold uppercase text-[10px] sm:text-xs tracking-widest border border-outline-variant/30">
+        ☁️ Cloud &amp; DevOps
+      </button>
+      <button onclick="switchTab('data')" id="tab-data" class="tab-btn px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-headline font-bold uppercase text-[10px] sm:text-xs tracking-widest border border-outline-variant/30 text-gray-400 hover:text-white">
+        📊 Data Analytics
+      </button>
+      <button onclick="switchTab('web')" id="tab-web" class="tab-btn px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-headline font-bold uppercase text-[10px] sm:text-xs tracking-widest border border-outline-variant/30 text-gray-400 hover:text-white">
+        🌐 Web &amp; Full-Stack
+      </button>
+    </div>
+
+    <!-- ===== CLOUD & DEVOPS PANEL ===== -->
+    <div id="panel-cloud" class="project-panel active space-y-6 sm:space-y-10">
+
+      <!-- Project: CI/CD Pipeline -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center">
+          <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4">DevOps Automation</span>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">End-to-End CI/CD Pipeline on AWS</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            Built a fully automated CI/CD pipeline using AWS CodePipeline, CodeBuild, and CodeDeploy. A single git push triggers build, test, and deployment to EC2. Reduced deployment time from 30+ min to ~8 min with zero human error. Artifacts stored in S3, logs via CloudWatch, IAM roles connecting all services.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">AWS</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">CodePipeline</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">EC2</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">S3</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">CloudWatch</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">IAM</span>
+          </div>
+          <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://github.com/Somgit001/my-cicd-project" target="_blank">
+            View on GitHub <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden">
+          <img alt="CI/CD Pipeline Architecture" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://media2.dev.to/dynamic/image/width%3D800%2Cheight%3D%2Cfit%3Dscale-down%2Cgravity%3Dauto%2Cformat%3Dauto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fjglqfbaaets9ly2qsqr2.png"/>
+          <div class="absolute inset-0 bg-gradient-to-r from-surface-container-low to-transparent"></div>
+        </div>
+      </div>
+
+      <!-- Project: EKS Microservices -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden order-last lg:order-first">
+          <img alt="Microservices on EKS" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://docs.aws.amazon.com/images/architecture-diagrams/latest/modernize-applications-with-microservices-using-amazon-eks/images/modernize-applications-with-microservices-using-amazon-eks.png"/>
+          <div class="absolute inset-0 bg-gradient-to-l from-surface-container-low to-transparent"></div>
+        </div>
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center order-1 lg:order-2">
+          <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4">Cloud Native</span>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">Cloud-Native Microservices on AWS EKS</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            Built a production-grade microservices platform with 4 services (User, Product, Order, Payment) using Node.js and Python Flask. Containerized with Docker, stored in AWS ECR, deployed to EKS with auto-scaling and zero-downtime rolling updates. GitHub Actions CI/CD and Prometheus + Grafana monitoring via Helm.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Kubernetes</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Docker</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">AWS EKS</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">GitHub Actions</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Grafana</span>
+          </div>
+          <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://github.com/Somgit001/microservices-eks-devops" target="_blank">
+            View on GitHub <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Project: Terraform IaC -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center">
+          <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4">Infrastructure as Code</span>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">AWS Infrastructure Automation with Terraform</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            Provisioned a complete production-grade AWS networking and compute stack using Terraform — zero manual console clicks. Deployed custom VPC, public/private subnets, Internet Gateway, route tables, Security Groups, and an EC2 instance (Amazon Linux 2) with Apache auto-provisioned via user_data. Full IaC lifecycle: init → plan → apply. Region: ap-south-1 (Mumbai).
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Terraform</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">AWS VPC</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">EC2</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">IaC</span>
+          </div>
+          <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://github.com/Somgit001/terraform-aws-infrastructure.git" target="_blank">
+            View on GitHub <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden">
+          <img alt="Terraform AWS Architecture" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://www.altexsoft.com/static/blog-post/2023/11/2fdb241f-32bc-4c4b-aed4-f5836063dbad.jpg"/>
+          <div class="absolute inset-0 bg-gradient-to-r from-surface-container-low to-transparent"></div>
+        </div>
+      </div>
+
+      <!-- Project: AWS Cost Monitoring -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden order-last lg:order-first">
+          <img alt="AWS Cost Monitoring Dashboard" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://d2908q01vomqb2.cloudfront.net/972a67c48192728a34979d9a35164c1295401b71/2022/08/08/cloudops_803_2.png"/>
+          <div class="absolute inset-0 bg-gradient-to-l from-surface-container-low to-transparent"></div>
+        </div>
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center order-1 lg:order-2">
+          <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4">Cloud Monitoring</span>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">AWS Cost Optimization &amp; Resource Monitoring</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            Provisioned EC2, SNS, and CloudWatch with Terraform. Deployed Prometheus, Grafana, and Node Exporter via Docker Compose for live CPU, RAM, Disk, and Network metrics. Lambda (Python) generates automated cost reports triggered daily by EventBridge. SNS alerts for billing alarms — all components tested and validated.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Terraform</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Prometheus</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Grafana</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Lambda</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">EventBridge</span>
+          </div>
+          <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://github.com/Somgit001/aws-cost-monitoring-project" target="_blank">
+            View on GitHub <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Project: IAM Security Hardening -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center">
+          <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4">Cloud Security</span>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">AWS IAM &amp; Security Hardening</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            Simulated an enterprise security environment: IAM Groups with least privilege, MFA enforcement via Google Authenticator, custom S3 bucket policies, CloudTrail multi-region audit logging, AWS Config with 4 compliance rules, GuardDuty threat detection, and CloudWatch metric filters + SNS alerts. All access-denied controls tested and validated.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">IAM</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">GuardDuty</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">CloudTrail</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">AWS Config</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">SNS</span>
+          </div>
+          <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://github.com/Somgit001/aws-iam-security-hardening" target="_blank">
+            View on GitHub <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden">
+          <img alt="AWS IAM Security Hardening" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2018/09/04/visualize-GD-02.png"/>
+          <div class="absolute inset-0 bg-gradient-to-r from-surface-container-low to-transparent"></div>
+        </div>
+      </div>
+
+    </div><!-- end cloud panel -->
+
+    <!-- ===== DATA ANALYTICS PANEL ===== -->
+    <div id="panel-data" class="project-panel space-y-6 sm:space-y-10">
+
+      <!-- E-Commerce Dashboard -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center">
+          <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4">Data Analytics</span>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">E-Commerce Sales &amp; Revenue Dashboard</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            Analyzed 500,000+ e-commerce transactions end-to-end. Cleaned data, loaded into MySQL, and wrote queries for revenue, orders, monthly trends, top products, and customer insights. Built an interactive Excel dashboard with KPI cards, line charts, and bar charts. Key metrics: ₹4,016,817 total revenue, 22,068 orders, 4,373 customers.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">MySQL</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Excel</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">SQL</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Data Analytics</span>
+          </div>
+          <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://github.com/Somgit001/ecommerce-sales-dashboard" target="_blank">
+            View on GitHub <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden">
+          <img alt="E-Commerce Sales Dashboard" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://images.ctfassets.net/lzny33ho1g45/2lndhrfApax7h3LV5zE3oa/c1882d2e1051d79d53a0630e7fbb7ff8/kpi-dashboard-excel-09-template-retail-management.png"/>
+          <div class="absolute inset-0 bg-gradient-to-r from-surface-container-low to-transparent"></div>
+        </div>
+      </div>
+
+      <!-- Enterprise Sales Analytics -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden order-last lg:order-first">
+          <img alt="Enterprise Sales Analytics" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://miro.medium.com/1%2AGBOuamRUEZwkenGQ8Wmelw.jpeg"/>
+          <div class="absolute inset-0 bg-gradient-to-l from-surface-container-low to-transparent"></div>
+        </div>
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center order-1 lg:order-2">
+          <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4">Business Intelligence</span>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">Enterprise Sales Analytics Dashboard</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            Designed a relational sales database, created analytical SQL views (JOINs across sales, products, customers) to compute revenue, cost, and profit. Visualized with Excel Pivot Tables, Pivot Charts, and Slicers. Key findings: $128K+ total revenue, 301 orders, Electronics at 57% profit, West region leading at $46,898. Top 5 products generate 60% of revenue.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">SQL</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">MySQL</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Excel</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Pivot Tables</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">BI</span>
+          </div>
+          <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://github.com/Somgit001/sales-dashboard.git" target="_blank">
+            View on GitHub <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+
+    </div><!-- end data panel -->
+
+    <!-- ===== WEB & FULL-STACK PANEL ===== -->
+    <div id="panel-web" class="project-panel space-y-6 sm:space-y-10">
+
+      <!-- Resume.AI -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center">
+          <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4">AI Web App</span>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">Resume.AI — Smart ATS Resume Editor</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            Paste or upload your resume, enter a job role, and get an ATS-optimized version powered by Groq AI (LLaMA 3.3 70B). Features ATS scoring across 5 dimensions, keyword injection, bullet enhancement, PDF and DOCX download. Supports PDF/DOCX/TXT upload with text extraction — all in a single HTML file, no server needed.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Groq AI</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">PDF.js</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">jsPDF</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Vanilla JS</span>
+          </div>
+          <div class="flex items-center gap-6">
+            <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://somgit001.github.io/resume-ai-editor/" target="_blank">
+              Live Demo <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+            </a>
+            <a class="text-gray-400 font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 hover:text-white transition-colors" href="https://github.com/Somgit001/resume-ai-editor.git" target="_blank">
+              GitHub
+            </a>
+          </div>
+        </div>
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden">
+          <img alt="Resume.AI App" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://images.ctfassets.net/lzny33ho1g45/2hlRzDJ7R74d7i6Guc8ypJ/88c4b763066d758e08a29a38615f1b59/image1.png"/>
+          <div class="absolute inset-0 bg-gradient-to-r from-surface-container-low to-transparent"></div>
+        </div>
+      </div>
+
+      <!-- JobTrack -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden order-last lg:order-first">
+          <img alt="JobTrack App" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://cdn.dribbble.com/userupload/46989551/file/5031963353eef7200f18843d345b8f2e.png?resize=752x&vertical=center"/>
+          <div class="absolute inset-0 bg-gradient-to-l from-surface-container-low to-transparent"></div>
+        </div>
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center order-1 lg:order-2">
+          <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4">Productivity Tool</span>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">JobTrack — Personal Job Application Tracker</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            A single-file job tracker built during an active job search. No backend, no login — just open and track. Features a dashboard with doughnut charts (source, status, location), full application log, search &amp; filter, CSV export, and an AI Cover Letter generator powered by Google Gemini. Data persists in browser localStorage.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">HTML/CSS/JS</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Chart.js</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Gemini AI</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">localStorage</span>
+          </div>
+          <div class="flex items-center gap-6">
+            <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://somgit001.github.io/jobtrack/" target="_blank">
+              Live Demo <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+            </a>
+            <a class="text-gray-400 font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 hover:text-white transition-colors" href="https://github.com/Somgit001/jobtrack.git" target="_blank">
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- JobHunt AI -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center">
+          <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4">AI Automation Tool</span>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">JobHunt AI — Local Job Search Automation</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            A local job-hunting automation tool for freshers. Finds relevant openings across LinkedIn, Naukri, Internshala, Wellfound, and Indeed using AI. Generates personalized, ATS-friendly cover letters from any job description via Groq API (LLaMA 3.3 70B). Includes a built-in application tracker. Runs entirely on your machine — no data leaves your system.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Node.js</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Groq AI</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">HTML/CSS/JS</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">LLaMA 3.3 70B</span>
+          </div>
+          <div class="flex items-center gap-6">
+            <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://somgit001.github.io/JobHunt-AI/" target="_blank">
+              Live Demo <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+            </a>
+            <a class="text-gray-400 font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 hover:text-white transition-colors" href="https://github.com/Somgit001/JobHunt-AI.git" target="_blank">
+              GitHub
+            </a>
+          </div>
+        </div>
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden">
+          <img alt="JobHunt AI Tool" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://www.loopcv.pro/assets/images/screens/dashboard%20home%20with%20shapes.webp"/>
+          <div class="absolute inset-0 bg-gradient-to-r from-surface-container-low to-transparent"></div>
+        </div>
+      </div>
+
+      <!-- Live Recruiter Feed -->
+      <div class="bg-surface-container-low rounded-2xl sm:rounded-3xl overflow-hidden grid lg:grid-cols-12 border border-outline-variant/5 group">
+        <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden order-last lg:order-first">
+          <!-- Animated recruiter feed visual -->
+          <div class="w-full h-full min-h-[220px] relative flex flex-col justify-center px-6 py-8 gap-3 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#1a1919] to-[#0e0e0e]"></div>
+            <!-- Animated feed cards -->
+            <div class="relative z-10 space-y-2.5">
+              <div class="flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3 border border-primary/20 recruiter-card" style="animation: slideInFeed 0.5s ease 0.1s both;">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff5b4b] to-[#e2241f] flex items-center justify-center flex-shrink-0 text-white font-bold text-xs">HR</div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-white font-bold text-xs truncate">Priya Sharma · Infosys</p>
+                  <p class="text-on-surface-variant text-[10px]">Hiring DevOps Fresher · Posted 3m ago</p>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-green-500/15 text-green-400 border border-green-500/20 flex-shrink-0">Fresher</span>
+              </div>
+              <div class="flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3 border border-outline-variant/10 recruiter-card" style="animation: slideInFeed 0.5s ease 0.25s both;">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#0A66C2] to-[#004499] flex items-center justify-center flex-shrink-0 text-white font-bold text-xs">TM</div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-white font-bold text-xs truncate">Rahul Mehta · Tech Mahindra</p>
+                  <p class="text-on-surface-variant text-[10px]">Cloud Support Eng · 1–3 yrs</p>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-yellow-500/15 text-yellow-400 border border-yellow-500/20 flex-shrink-0">Exp</span>
+              </div>
+              <div class="flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3 border border-outline-variant/10 recruiter-card opacity-50 relative" style="animation: slideInFeed 0.5s ease 0.4s both;">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff8e80] to-[#ff5b4b] flex items-center justify-center flex-shrink-0 text-white font-bold text-xs">CB</div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-white font-bold text-xs truncate">Neha Joshi · Capgemini</p>
+                  <p class="text-on-surface-variant text-[10px]">Linux Admin · Fresher OK</p>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-primary/15 text-primary border border-primary/20 flex-shrink-0">Contacted ✓</span>
+                <div class="absolute inset-0 rounded-xl bg-surface-container/60 backdrop-blur-[1px]"></div>
+              </div>
+            </div>
+            <!-- Filter bar -->
+            <div class="relative z-10 flex gap-2 mt-1">
+              <div class="px-3 py-1.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold uppercase tracking-wide">Fresher ✓</div>
+              <div class="px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant/20 text-gray-500 text-[10px] font-bold uppercase tracking-wide">Experienced</div>
+              <div class="px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant/20 text-gray-500 text-[10px] font-bold uppercase tracking-wide">Remote</div>
+            </div>
+            <!-- Live badge -->
+            <div class="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-red-500/15 border border-red-500/30 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span>
+              <span class="text-red-400 text-[9px] font-bold uppercase tracking-widest">Live</span>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-l from-surface-container-low to-transparent pointer-events-none"></div>
+          </div>
+          <style>
+            @keyframes slideInFeed { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+            .recruiter-card { transition: all 0.2s ease; }
+          </style>
+        </div>
+        <div class="proj-content lg:col-span-5 flex flex-col justify-center order-1 lg:order-2">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="font-label text-xs uppercase tracking-widest text-primary font-bold">Full-Stack · Live Feed</span>
+            <span class="flex items-center gap-1 px-2 py-0.5 bg-red-500/15 border border-red-500/25 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span>
+              <span class="text-red-400 text-[9px] font-bold uppercase tracking-wide">Live</span>
+            </span>
+          </div>
+          <h3 class="font-headline text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-3 sm:mb-4 group-hover:text-primary transition-colors">Live Recruiter Feed</h3>
+          <p class="text-on-surface-variant font-body mb-6 leading-relaxed text-sm">
+            Recruiters hiring right now — scraped and refreshed in real time. Filter by <strong class="text-white">Fresher</strong> or <strong class="text-white">Experienced</strong> to see only relevant listings. Recruiters you've already contacted are automatically hidden so you never double-reach. Built for freshers who want signal, not noise.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Node.js</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">WebSockets</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">LinkedIn API</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">MongoDB</span>
+            <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">React</span>
+          </div>
+          <div class="flex items-center gap-6">
+            <a class="text-primary font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 group/link" href="https://somgit001.github.io/live-recruiter-feed/" target="_blank">
+              Live Demo <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+            </a>
+            <a class="text-gray-400 font-headline font-bold text-sm uppercase tracking-widest flex items-center gap-2 hover:text-white transition-colors" href="https://github.com/Somgit001/live-recruiter-feed.git" target="_blank">
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end web panel -->
+
+  </section>
+
+  <!-- ========== EDUCATION ========== -->
+  <section id="education" class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+      <div>
+        <h2 class="font-headline text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-white mb-2 sm:mb-4">Education</h2>
+        <p class="text-on-surface-variant font-body">My academic background and qualifications.</p>
+      </div>
+      <div class="h-[1px] flex-grow bg-outline-variant/20 hidden md:block mx-12"></div>
+      <div class="font-headline font-black text-6xl opacity-10 select-none uppercase">Edu</div>
+    </div>
+    <div class="space-y-6">
+      <!-- BCA -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+          <div class="flex items-start gap-6">
+            <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0">
+              <span class="material-symbols-outlined text-primary text-3xl">school</span>
+            </div>
+            <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden">
+              <img alt="Sri Sri University" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://srisriuniversity.edu.in/wp-content/uploads/2021/03/Campus-Facilties-1.jpg"/>
+              <div class="absolute inset-0 bg-gradient-to-r from-surface-container-low to-transparent"></div>
+            </div>
+            <div>
+              <div class="flex items-center gap-3 mb-1">
+                <h3 class="font-headline text-xl font-extrabold text-white group-hover:text-primary transition-colors">Bachelor of Computer Applications (BCA)</h3>
+              </div>
+              <p class="text-white font-body font-semibold">Sri Sri University</p>
+              <p class="text-on-surface-variant font-body text-sm mt-1 flex items-center gap-1">📍 Cuttack, Odisha</p>
+              <p class="text-on-surface-variant font-body text-sm mt-3 leading-relaxed max-w-2xl">
+                Completed Bachelor of Computer Applications (BCA) at Sri Sri University, with a strong focus on computer fundamentals, programming, and practical skill development. Actively building expertise in Cloud Computing, Linux, Python, SQL, and Web Technologies.
+              </p>
+              <div class="flex flex-wrap gap-2 mt-4">
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Cloud Computing</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Linux</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Python</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">SQL</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Web Technologies</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">NLP</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right flex-shrink-0 md:min-w-[140px]">
+            <span class="inline-block px-4 py-2 bg-primary/10 rounded-full font-label text-xs font-bold text-primary uppercase tracking-widest">Aug 2023 – Apr 2026</span>
+          </div>
+        </div>
+      </div>
+      <!-- I.Com -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+          <div class="flex items-start gap-6">
+            <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0">
+              <span class="material-symbols-outlined text-primary text-3xl">menu_book</span>
+            </div>
+            <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden">
+              <img alt="Sri Sri University" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://content3.jdmagicbox.com/comp/rairangpur/l4/9999p6794.6794.171230121647.x8l4/catalogue/rairangpur-college-purunaghati-rairangpur-colleges-g3w0xus2se.jpg"/>
+              <div class="absolute inset-0 bg-gradient-to-r from-surface-container-low to-transparent"></div>
+            </div>
+            <div>
+              <h3 class="font-headline text-xl font-extrabold text-white group-hover:text-primary transition-colors">I.Com — Business / Commerce</h3>
+              <p class="text-white font-body font-semibold mt-1">Rairangpur College</p>
+              <p class="text-on-surface-variant font-body text-sm mt-1 flex items-center gap-1">📍 Rairangpur, Odisha</p>
+              <p class="text-on-surface-variant font-body text-sm mt-3 leading-relaxed max-w-2xl">
+                Completed Intermediate of Commerce (I.Com) with a general focus on business and commerce fundamentals. Developed a strong understanding of accounting basics, economics, and organizational concepts, along with analytical thinking and problem-solving skills.
+              </p>
+              <div class="flex flex-wrap gap-2 mt-4">
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Accounting</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Economics</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Business Studies</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right flex-shrink-0 md:min-w-[140px]">
+            <span class="inline-block px-4 py-2 bg-primary/10 rounded-full font-label text-xs font-bold text-primary uppercase tracking-widest">Apr 2021 – Jul 2023</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 10th -->
+<div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+    
+    <div class="flex items-start gap-6">
+      <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0">
+        <span class="material-symbols-outlined text-primary text-3xl">cast_for_education</span>
+      </div>
+      <div class="proj-img lg:col-span-7 bg-surface-container-highest relative overflow-hidden">
+        <img alt="Kerala Public School" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://rairangpur.keralapublicschooltrust.com/wp-content/uploads/2014/09/building.jpg"/>
+        <div class="absolute inset-0 bg-gradient-to-r from-surface-container-low to-transparent"></div>
+      </div>
+      <div>
+        <h3 class="font-headline text-xl font-extrabold text-white group-hover:text-primary transition-colors">
+          10th — Matriculation
+        </h3>
+        <p class="text-white font-body font-semibold mt-1">
+          Kerala Public School
+        </p>
+        <p class="text-on-surface-variant font-body text-sm mt-1 flex items-center gap-1">
+          📍 Rairangpur, Odisha
+        </p>
+        <p class="text-on-surface-variant font-body text-sm mt-3 leading-relaxed max-w-2xl">
+          Completed matriculation with a focus on core subjects and overall academic development. Built a strong foundation in analytical thinking, problem-solving, and basic concepts across subjects.
+        </p>
+        <div class="flex flex-wrap gap-2 mt-4">
+          <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Mathematics</span>
+          <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Science</span>
+          <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">General Studies</span>
+        </div>
+      </div>
+    </div>
+    <div class="text-right flex-shrink-0 md:min-w-[140px]">
+      <span class="inline-block px-4 py-2 bg-primary/10 rounded-full font-label text-xs font-bold text-primary uppercase tracking-widest">
+        Jul 2008 – Mar 2021
+      </span>
+    </div>
+
+  </div>
+</div>
+  </section>
+
+  <!-- ========== EXPERIENCE ========== -->
+  <section id="experience" class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+      <div>
+        <h2 class="font-headline text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-white mb-2 sm:mb-4">Experience</h2>
+        <p class="text-on-surface-variant font-body">A detailed overview of my professional journey, highlighting key roles and skills acquired.</p>
+      </div>
+      <div class="h-[1px] flex-grow bg-outline-variant/20 hidden md:block mx-12"></div>
+      <div class="flex flex-wrap gap-3 mt-4 md:mt-0">
+        <a href="https://drive.google.com/file/d/15EnpOIu64U-R5JToq79mSPlD3CUm1vBB/view?usp=drive_link" target="_blank"
+           class="flex items-center gap-2 bg-surface-container-highest border border-outline-variant/30 text-white px-6 py-3 rounded-full font-headline font-extrabold uppercase text-xs tracking-widest hover:bg-surface-container transition-colors flex-shrink-0 group">
+          <span class="material-symbols-outlined text-base transition-transform">visibility</span>
+          View CV
+        </a>
+      </div>
+    </div>
+    <div class="space-y-6">
+      <!-- YBI Foundation -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+          <div class="flex items-start gap-6">
+            <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0">
+              <span class="material-symbols-outlined text-primary text-3xl">terminal</span>
+            </div>
+            <div>
+              <h3 class="font-headline text-xl font-extrabold text-white group-hover:text-primary transition-colors">Python Programming Internship</h3>
+              <p class="text-white font-body font-semibold mt-1">YBI Foundation</p>
+              <p class="text-on-surface-variant font-body text-sm mt-1 flex items-center gap-1">📍 Remote</p>
+              <p class="text-on-surface-variant font-body text-sm mt-3 leading-relaxed max-w-2xl">
+                Completed a Python programming internship focused on building a strong foundation in Python development and problem-solving. Gained hands-on experience with core Python concepts including data types, control structures, functions, and data structures. Worked on practical projects to enhance programming skills.
+              </p>
+              <div class="flex flex-wrap gap-2 mt-4">
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Python</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Data Structures</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Functions</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Problem Solving</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right flex-shrink-0 md:min-w-[150px]">
+            <span class="inline-block px-4 py-2 bg-primary/10 rounded-full font-label text-xs font-bold text-primary uppercase tracking-widest">Jul 2024 – Aug 2024</span>
+          </div>
+        </div>
+      </div>
+      <!-- Tamizhan Skills -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+          <div class="flex items-start gap-6">
+            <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0">
+              <span class="material-symbols-outlined text-primary text-3xl">web</span>
+            </div>
+            <div>
+              <h3 class="font-headline text-xl font-extrabold text-white group-hover:text-primary transition-colors">Web Developer Internship</h3>
+              <p class="text-white font-body font-semibold mt-1">Tamizhan Skills</p>
+              <p class="text-on-surface-variant font-body text-sm mt-1 flex items-center gap-1">📍 Remote</p>
+              <p class="text-on-surface-variant font-body text-sm mt-3 leading-relaxed max-w-2xl">
+                Developed and maintained responsive web applications using modern web technologies. Collaborated with design teams to implement user-friendly interfaces and learned best practices in frontend development.
+              </p>
+              <div class="flex flex-wrap gap-2 mt-4">
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">HTML</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">CSS</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">JavaScript</span>
+                <span class="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-label uppercase font-bold text-white">Responsive Design</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right flex-shrink-0 md:min-w-[150px]">
+            <span class="inline-block px-4 py-2 bg-primary/10 rounded-full font-label text-xs font-bold text-primary uppercase tracking-widest">Jun 2025 – Jul 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ACHIEVEMENTS ========== -->
+  <section id="achievements" class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+      <div>
+        <h2 class="font-headline text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-white mb-2 sm:mb-4">Achievements</h2>
+        <p class="text-on-surface-variant font-body">A detailed overview of my professional achievements, highlighting key accomplishments and recognition.</p>
+      </div>
+      <div class="h-[1px] flex-grow bg-outline-variant/20 hidden md:block mx-12"></div>
+      <div class="font-headline font-black text-6xl opacity-10 select-none uppercase">Wins</div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <!-- AI for Entrepreneurship -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-outline-variant/10 hover:border-primary/30 transition-all group">
+        <div class="bg-primary/10 p-3 rounded-xl w-fit mb-5"><span class="material-symbols-outlined text-primary">emoji_events</span></div>
+        <h3 class="font-headline text-lg font-extrabold text-white mb-1 group-hover:text-primary transition-colors">AI For Entrepreneurship</h3>
+        <p class="text-primary font-label text-xs uppercase tracking-widest font-bold mb-3">Atal Innovation Mission, Niti Aayog, India &amp; Intel India</p>
+        <p class="text-on-surface-variant font-body text-sm leading-relaxed">Completed the AI for Entrepreneurship micro-learning module offered by Atal Innovation Mission, Niti Aayog, and Intel India. Gained practical knowledge on applying AI concepts to entrepreneurial and business solutions.</p>
+      </div>
+      <!-- 5+ AWS Projects -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-outline-variant/10 hover:border-primary/30 transition-all group">
+        <div class="bg-primary/10 p-3 rounded-xl w-fit mb-5"><span class="material-symbols-outlined text-primary">rocket_launch</span></div>
+        <h3 class="font-headline text-lg font-extrabold text-white mb-1 group-hover:text-primary transition-colors">5+ Production-Grade AWS Projects</h3>
+        <p class="text-primary font-label text-xs uppercase tracking-widest font-bold mb-3">Self-Directed</p>
+        <p class="text-on-surface-variant font-body text-sm leading-relaxed">Built and deployed CI/CD pipelines, Kubernetes clusters, Terraform infrastructure, and security-hardened environments — all independently architected, built, and fully documented on GitHub.</p>
+      </div>
+      <!-- 500K Transactions -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-outline-variant/10 hover:border-primary/30 transition-all group">
+        <div class="bg-primary/10 p-3 rounded-xl w-fit mb-5"><span class="material-symbols-outlined text-primary">analytics</span></div>
+        <h3 class="font-headline text-lg font-extrabold text-white mb-1 group-hover:text-primary transition-colors">500K+ Transactions Analyzed</h3>
+        <p class="text-primary font-label text-xs uppercase tracking-widest font-bold mb-3">E-Commerce Analytics</p>
+        <p class="text-on-surface-variant font-body text-sm leading-relaxed">Analyzed 500,000+ e-commerce records using MySQL, uncovering ₹4M+ in revenue insights and building an interactive Excel KPI dashboard used for business reporting.</p>
+      </div>
+      <!-- AI Tools -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-outline-variant/10 hover:border-primary/30 transition-all group">
+        <div class="bg-primary/10 p-3 rounded-xl w-fit mb-5"><span class="material-symbols-outlined text-primary">smart_toy</span></div>
+        <h3 class="font-headline text-lg font-extrabold text-white mb-1 group-hover:text-primary transition-colors">3 AI Tools Built &amp; Shipped</h3>
+        <p class="text-primary font-label text-xs uppercase tracking-widest font-bold mb-3">Open Source</p>
+        <p class="text-on-surface-variant font-body text-sm leading-relaxed">Built Resume.AI, JobTrack, and JobHunt AI — open-source tools helping freshers optimize resumes, track applications, and automate job searches using Groq and Gemini AI APIs.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CERTIFICATIONS ========== -->
+  <section id="certifications" class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+      <div>
+        <h2 class="font-headline text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-white mb-2 sm:mb-4">Certifications</h2>
+        <p class="text-on-surface-variant font-body">A list of notable accomplishments, including certificates and professional training.</p>
+      </div>
+      <div class="h-[1px] flex-grow bg-outline-variant/20 hidden md:block mx-12"></div>
+      <div class="font-headline font-black text-6xl opacity-10 select-none uppercase">Certs</div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      <!-- AWS Fundamentals -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-7 border border-outline-variant/10 hover:border-primary/30 transition-all group flex items-start gap-6">
+        <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary text-3xl">verified</span></div>
+        <div class="flex-1">
+          <h3 class="font-headline text-lg font-extrabold text-white group-hover:text-primary transition-colors">AWS Fundamentals</h3>
+          <p class="text-on-surface-variant font-label text-xs uppercase tracking-widest mt-1 mb-2">📍 Simplilearn</p>
+          <p class="text-on-surface-variant font-body text-sm leading-relaxed mb-4">Completed AWS fundamentals training covering core cloud concepts, compute, storage, networking, and identity management. Gained hands-on understanding of EC2, S3, and IAM.</p>
+          <a href="https://www.simplilearn.com/skillup-certificate-landing?token=eyJjb3Vyc2VfaWQiOiIzMjE4IiwiY2VydGlmaWNhdGVfdXJsIjoiaHR0cHM6XC9cL2NlcnRpZmljYXRlcy5zaW1wbGljZG4ubmV0XC9zaGFyZVwvODAyNTExOV84Mzc2MzY5MTc0MTYzODQ4NTYzNy5wbmciLCJ1c2VybmFtZSI6IlNvbSBBdGhnaGFyYSAifQ&utm_source=shared-certificate&utm_medium=app_lms&utm_campaign=shared-certificate-promotion&referrer=https%3A%2F%2Fcertificates.simplicdn.net%2Fshare%2F8025119_83763691741638485637.png&_branch_match_id=1504825745256679523&_branch_referrer=H4sIAAAAAAAAA8soKSkottLXL87MLcjJ1EssKNDLyczL1s82svQ3CDdLdQlKsq8rSk1LLSrKzEuPTyrKLy9OLbL1AapJTfHMAwCM6EZjPwAAAA%3D%3D" class="inline-flex items-center gap-2 text-primary font-label text-xs font-bold uppercase tracking-widest hover:underline">
+            <span class="material-symbols-outlined text-sm">open_in_new</span> View Certificate
+          </a>
+        </div>
+      </div>
+      <!-- Claude Code -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-7 border border-outline-variant/10 hover:border-primary/30 transition-all group flex items-start gap-6">
+        <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0">
+          <span class="material-symbols-outlined text-primary text-3xl">verified</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-headline text-lg font-extrabold text-white group-hover:text-primary transition-colors">
+            Claude Code
+          </h3>
+          <p class="text-on-surface-variant font-label text-xs uppercase tracking-widest mt-1 mb-2">
+            📍 Claude (Anthropic)
+          </p>
+          <p class="text-on-surface-variant font-body text-sm leading-relaxed mb-4">
+            Completed Claude Code course covering AI-assisted development, prompt engineering, and practical use of AI tools for coding and workflow improvement.
+          </p>
+          <a href="https://verify.skilljar.com/c/yyqmfhnqft2c" target="_blank" class="inline-flex items-center gap-2 text-primary font-label text-xs font-bold uppercase tracking-widest hover:underline">
+            <span class="material-symbols-outlined text-sm">open_in_new</span> View Certificate
+          </a>
+        </div>
+      </div>
+      <!-- Google Cloud -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-7 border border-outline-variant/10 hover:border-primary/30 transition-all group flex items-start gap-6">
+        <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary text-3xl">verified</span></div>
+        <div class="flex-1">
+          <h3 class="font-headline text-lg font-extrabold text-white group-hover:text-primary transition-colors">Google Cloud</h3>
+          <p class="text-on-surface-variant font-label text-xs uppercase tracking-widest mt-1 mb-2">📍 Google</p>
+          <p class="text-on-surface-variant font-body text-sm leading-relaxed mb-4">Earned Google Cloud certification covering cloud fundamentals, core services, and basic cloud architecture. Gained understanding of how cloud computing enables scalable infrastructure and application deployment.</p>
+          <a href="https://www.skills.google/public_profiles/c75e7a60-e5b4-4293-8619-4578ae28544c/badges/14352925?utm_medium=social&utm_source=linkedin&utm_campaign=ql-social-share" class="inline-flex items-center gap-2 text-primary font-label text-xs font-bold uppercase tracking-widest hover:underline">
+            <span class="material-symbols-outlined text-sm">open_in_new</span> View Certificate
+          </a>
+        </div>
+      </div>
+      <!-- Python -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-7 border border-outline-variant/10 hover:border-primary/30 transition-all group flex items-start gap-6">
+        <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary text-3xl">verified</span></div>
+        <div class="flex-1">
+          <h3 class="font-headline text-lg font-extrabold text-white group-hover:text-primary transition-colors">Programming Using Python</h3>
+          <p class="text-on-surface-variant font-label text-xs uppercase tracking-widest mt-1 mb-2">📍 Udemy</p>
+          <p class="text-on-surface-variant font-body text-sm leading-relaxed mb-4">Completed Python programming certification covering data types, loops, functions, data structures, file handling, and exception handling. Gained practical experience writing clean code and automation scripts.</p>
+          <a href="https://www.udemy.com/certificate/UC-ceb1a862-a03e-4065-bc7f-29964b6a6d65/" class="inline-flex items-center gap-2 text-primary font-label text-xs font-bold uppercase tracking-widest hover:underline">
+            <span class="material-symbols-outlined text-sm">open_in_new</span> View Certificate
+          </a>
+        </div>
+      </div>
+      <!-- SQL -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-7 border border-outline-variant/10 hover:border-primary/30 transition-all group flex items-start gap-6">
+        <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary text-3xl">verified</span></div>
+        <div class="flex-1">
+          <h3 class="font-headline text-lg font-extrabold text-white group-hover:text-primary transition-colors">SQL Certification</h3>
+          <p class="text-on-surface-variant font-label text-xs uppercase tracking-widest mt-1 mb-2">📍 Letsupgrade</p>
+          <p class="text-on-surface-variant font-body text-sm leading-relaxed mb-4">Completed SQL certification covering database fundamentals, queries, filtering, joins, and data manipulation. Developed the ability to retrieve and manage structured data efficiently.</p>
+          <a href="https://verify.letsupgrade.in/certificate/LUESQLJUN1241586" class="inline-flex items-center gap-2 text-primary font-label text-xs font-bold uppercase tracking-widest hover:underline">
+            <span class="material-symbols-outlined text-sm">open_in_new</span> View Certificate
+          </a>
+        </div>
+      </div>
+      <!-- Web Development -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-7 border border-outline-variant/10 hover:border-primary/30 transition-all group flex items-start gap-6">
+        <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary text-3xl">verified</span></div>
+        <div class="flex-1">
+          <h3 class="font-headline text-lg font-extrabold text-white group-hover:text-primary transition-colors">Web Development</h3>
+          <p class="text-on-surface-variant font-label text-xs uppercase tracking-widest mt-1 mb-2">📍 Internshala</p>
+          <p class="text-on-surface-variant font-body text-sm leading-relaxed mb-4">Completed web development training focused on building responsive websites using HTML, CSS, and JavaScript. Gained hands-on experience in frontend development and UI design principles.</p>
+          <a href="https://trainings.internshala.com/view_certificate/5omfhcnw7lt/fgotm5pugqc/" class="inline-flex items-center gap-2 text-primary font-label text-xs font-bold uppercase tracking-widest hover:underline">
+            <span class="material-symbols-outlined text-sm">open_in_new</span> View Certificate
+          </a>
+        </div>
+      </div>
+      <!-- GenAI Data Analytics -->
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-7 border border-outline-variant/10 hover:border-primary/30 transition-all group flex items-start gap-6">
+        <div class="bg-primary/10 p-4 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary text-3xl">verified</span></div>
+        <div class="flex-1">
+          <h3 class="font-headline text-lg font-extrabold text-white group-hover:text-primary transition-colors">GenAI Powered Data Analytics</h3>
+          <p class="text-on-surface-variant font-label text-xs uppercase tracking-widest mt-1 mb-2">📍 Tata Group</p>
+          <p class="text-on-surface-variant font-body text-sm leading-relaxed mb-4">Completed a virtual job simulation focused on data analytics tasks using Generative AI tools. Gained exposure to data analysis workflows and business problem-solving with AI-assisted approaches.</p>
+          <a href="https://www.linkedin.com/learning/certificates/08655296df605625333342e8990d3dce22566bef0e77620e7485e88d4712ed64" class="inline-flex items-center gap-2 text-primary font-label text-xs font-bold uppercase tracking-widest hover:underline">
+            <span class="material-symbols-outlined text-sm">open_in_new</span> View Certificate
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== LOOKING FOR ========== -->
+  <section id="looking-for" class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+      <div>
+        <h2 class="font-headline text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-white mb-2 sm:mb-4">I am Looking For</h2>
+        <p class="text-on-surface-variant font-body">The kind of roles and teams I want to work with.</p>
+      </div>
+      <div class="h-[1px] flex-grow bg-outline-variant/20 hidden md:block mx-12"></div>
+      <div class="font-headline font-black text-6xl opacity-10 select-none uppercase">Roles</div>
+    </div>
+    <!-- Role cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-8 sm:mb-12">
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-primary/20 group hover:bg-surface-container hover:border-primary/50 transition-all text-center">
+        <div class="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-3"><span class="material-symbols-outlined text-primary">cloud_sync</span></div>
+        <h3 class="font-headline text-sm font-extrabold text-white group-hover:text-primary transition-colors leading-tight">Cloud Engineer</h3>
+      </div>
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-outline-variant/10 group hover:border-primary/30 hover:bg-surface-container transition-all text-center">
+        <div class="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-3"><span class="material-symbols-outlined text-primary">settings_suggest</span></div>
+        <h3 class="font-headline text-sm font-extrabold text-white group-hover:text-primary transition-colors leading-tight">DevOps Engineer</h3>
+      </div>
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-outline-variant/10 group hover:border-primary/30 hover:bg-surface-container transition-all text-center">
+        <div class="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-3"><span class="material-symbols-outlined text-primary">terminal</span></div>
+        <h3 class="font-headline text-sm font-extrabold text-white group-hover:text-primary transition-colors leading-tight">Linux Administrator</h3>
+      </div>
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-outline-variant/10 group hover:border-primary/30 hover:bg-surface-container transition-all text-center">
+        <div class="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-3"><span class="material-symbols-outlined text-primary">code</span></div>
+        <h3 class="font-headline text-sm font-extrabold text-white group-hover:text-primary transition-colors leading-tight">Web Developer</h3>
+      </div>
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-outline-variant/10 group hover:border-primary/30 hover:bg-surface-container transition-all text-center">
+        <div class="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-3"><span class="material-symbols-outlined text-primary">bar_chart</span></div>
+        <h3 class="font-headline text-sm font-extrabold text-white group-hover:text-primary transition-colors leading-tight">Data Analysis</h3>
+      </div>
+      <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-outline-variant/10 group hover:border-primary/30 hover:bg-surface-container transition-all text-center">
+        <div class="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-3"><span class="material-symbols-outlined text-primary">dns</span></div>
+        <h3 class="font-headline text-sm font-extrabold text-white group-hover:text-primary transition-colors leading-tight">System Administrator</h3>
+      </div>
+    </div>
+    <!-- Info strip -->
+    <div class="bg-surface-container-low rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-outline-variant/10 grid md:grid-cols-3 gap-8">
+      <div class="flex items-start gap-4">
+        <div class="bg-primary/10 p-3 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary">location_on</span></div>
+        <div>
+          <p class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-1">Location</p>
+          <p class="text-white font-headline font-bold">India</p>
+          <p class="text-on-surface-variant font-body text-sm mt-1">Remote / Hybrid / On-site</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="bg-primary/10 p-3 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary">check_circle</span></div>
+        <div>
+          <p class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-1">Availability</p>
+          <p class="text-white font-headline font-bold">Available Now</p>
+          <p class="text-on-surface-variant font-body text-sm mt-1">Immediate joining from April 2026</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="bg-primary/10 p-3 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary">business</span></div>
+        <div>
+          <p class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-1">Target Companies</p>
+          <p class="text-white font-headline font-bold">Startups to Enterprises</p>
+          <p class="text-on-surface-variant font-body text-sm mt-1">Capgemini, IBM, Cognizant, Tech Mahindra &amp; more</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT FORM ========== -->
+  <section id="contact" class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+      <div>
+        <h2 class="font-headline text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-white mb-2 sm:mb-4">Get In Touch</h2>
+        <p class="text-on-surface-variant font-body">Fill the form below — your message lands directly in my inbox.</p>
+      </div>
+      <div class="h-[1px] flex-grow bg-outline-variant/20 hidden md:block mx-12"></div>
+      <div class="font-headline font-black text-6xl opacity-10 select-none uppercase">Hello</div>
+    </div>
+
+    <div class="grid lg:grid-cols-5 gap-8 lg:gap-12 items-start">
+
+      <!-- Left: contact info -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/10 flex items-start gap-5">
+          <div class="bg-primary/10 p-3 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary">mail</span></div>
+          <div>
+            <p class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-1">Email</p>
+            <p class="text-white font-headline font-bold text-sm">
+              <a href="mailto:athgharasom@gmail.com">athgharasom@gmail.com</a>
+            </p>
+            <p class="text-on-surface-variant font-body text-xs mt-1">I reply within 24 hours</p>
+          </div>
+        </div>
+        <div class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/10 flex items-start gap-5">
+          <div class="bg-primary/10 p-3 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary">location_on</span></div>
+          <div>
+            <p class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-1">Location</p>
+            <p class="text-white font-headline font-bold text-sm">India</p>
+            <p class="text-on-surface-variant font-body text-xs mt-1">Open to Remote / Hybrid / On-site</p>
+          </div>
+        </div>
+        <div class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/10 flex items-start gap-5">
+          <div class="bg-primary/10 p-3 rounded-xl flex-shrink-0"><span class="material-symbols-outlined text-primary">link</span></div>
+          <div>
+            <p class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-2">Social</p>
+            <div class="flex gap-4">
+              <a href="https://github.com/Somgit001" target="_blank" class="text-on-surface-variant hover:text-primary transition-colors font-label text-xs uppercase tracking-widest font-bold">GitHub</a>
+              <a href="www.linkedin.com/in/som-athghara-71262122b" target="_blank" class="text-on-surface-variant hover:text-primary transition-colors font-label text-xs uppercase tracking-widest font-bold">LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: form -->
+      <div class="lg:col-span-3">
+        <div class="bg-surface-container-low rounded-2xl p-6 sm:p-8 border border-outline-variant/10">
+          <!-- Web3Forms: sends submissions directly to your email. Replace access_key with yours from https://web3forms.com -->
+          <div id="contact-form-wrap">
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold mb-2">Name *</label>
+                <input id="cf-name" type="text" placeholder="Your full name" required
+                  class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-xl px-4 py-3 text-white font-body text-sm placeholder:text-outline focus:outline-none focus:border-primary/50 transition-colors" />
+              </div>
+              <div>
+                <label class="block font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold mb-2">Email *</label>
+                <input id="cf-email" type="email" placeholder="you@example.com" required
+                  class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-xl px-4 py-3 text-white font-body text-sm placeholder:text-outline focus:outline-none focus:border-primary/50 transition-colors" />
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="block font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold mb-2">Subject</label>
+              <input id="cf-subject" type="text" placeholder="What's this about?"
+                class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-xl px-4 py-3 text-white font-body text-sm placeholder:text-outline focus:outline-none focus:border-primary/50 transition-colors" />
+            </div>
+            <div class="mb-6">
+              <label class="block font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold mb-2">Message *</label>
+              <textarea id="cf-message" rows="5" placeholder="Write your message here…" required
+                class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-xl px-4 py-3 text-white font-body text-sm placeholder:text-outline focus:outline-none focus:border-primary/50 transition-colors resize-none"></textarea>
+            </div>
+            <div id="cf-status" class="hidden mb-4 px-4 py-3 rounded-xl text-sm font-label font-bold uppercase tracking-widest text-center"></div>
+            <button id="cf-submit" onclick="sendContactForm()"
+              class="w-full bg-gradient-to-br from-primary-fixed-dim to-primary-dim text-on-primary-fixed py-4 rounded-full font-headline font-extrabold uppercase text-sm tracking-widest hover:shadow-[0_0_30px_rgba(226,36,31,0.4)] transition-all flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-base">send</span>
+              Send Message
+            </button>
+            <p class="text-on-surface-variant font-body text-xs text-center mt-4">Your message goes directly to my email. No account needed.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32 text-center">
+    <div class="bg-gradient-to-b from-surface-container-low to-background cta-inner rounded-2xl sm:rounded-[3rem] border border-outline-variant/10 overflow-hidden relative">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-dim/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <h2 class="font-headline text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 sm:mb-8 tracking-tighter relative z-10">
+        Ready to scale your <br/> <span class="text-primary italic">infrastructure?</span>
+      </h2>
+      <p class="text-on-surface-variant font-body text-lg max-w-2xl mx-auto mb-12 relative z-10 leading-relaxed">
+        Currently accepting fresher full-time opportunities and freelance projects. Let's build something efficient, secure, and resilient together.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-6 relative z-10">
+        <button class="w-full sm:w-auto bg-primary text-on-primary-fixed px-12 py-5 rounded-full font-headline font-extrabold uppercase text-sm tracking-widest hover:bg-primary-fixed transition-colors">
+          Start a Conversation
+        </button>
+        <a class="font-headline font-bold text-white hover:text-primary transition-colors flex items-center gap-2" href="mailto:athgharasom@gmail.com">
+          <span class="material-symbols-outlined text-base">mail</span>
+          athgharasom@gmail.com
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="w-full py-8 sm:py-12 px-4 sm:px-8 mt-10 sm:mt-20 border-t border-white/5 bg-[#0e0e0e]">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6 max-w-screen-2xl mx-auto text-center md:text-left">
+    <div class="text-lg font-bold text-white tracking-tighter">SOM ATHGHARA</div>
+    <div class="flex flex-wrap justify-center gap-5 sm:gap-10">
+      <a class="font-['Manrope'] text-xs tracking-widest uppercase text-gray-600 hover:text-[#ff8e80] transition-colors" href="https://github.com/Somgit001" target="_blank">Github</a>
+      <a class="font-['Manrope'] text-xs tracking-widest uppercase text-gray-600 hover:text-[#ff8e80] transition-colors" href="https://linkedin.com/in/somathghara" target="_blank">LinkedIn</a>
+      <a class="font-['Manrope'] text-xs tracking-widest uppercase text-gray-600 hover:text-[#ff8e80] transition-colors" href="https://x.com/AthgharaSom">X</a>
+      <a class="font-['Manrope'] text-xs tracking-widest uppercase text-gray-600 hover:text-[#ff8e80] transition-colors" href="mailto:athgharasom@gmail.com">Email</a>
+    </div>
+    <div class="font-['Manrope'] text-xs tracking-widest uppercase text-gray-600">
+      © 2025 SOM ATHGHARA. ALL RIGHTS RESERVED.
+    </div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  async function sendContactForm() {
+    const name    = document.getElementById('cf-name').value.trim();
+    const email   = document.getElementById('cf-email').value.trim();
+    const subject = document.getElementById('cf-subject').value.trim();
+    const message = document.getElementById('cf-message').value.trim();
+    const status  = document.getElementById('cf-status');
+    const btn     = document.getElementById('cf-submit');
+
+    if (!name || !email || !message) {
+      status.className = 'mb-4 px-4 py-3 rounded-xl text-sm font-label font-bold uppercase tracking-widest text-center bg-red-900/30 text-red-400 border border-red-500/20';
+      status.textContent = 'Please fill in your name, email, and message.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined text-base animate-spin">progress_activity</span> Sending…';
+    status.className = 'hidden';
+
+    try {
+      // Using Web3Forms — free service, no backend needed.
+      // ⚠️  REPLACE the access_key below with YOUR key from https://web3forms.com (free, takes 30 sec)
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: '32345542-9884-4324-a1fe-b623c2fd1dae',   // ← replace this
+          name, email,
+          subject: subject || 'Portfolio Contact — ' + name,
+          message,
+          from_name: 'Portfolio Contact Form'
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        status.className = 'mb-4 px-4 py-3 rounded-xl text-sm font-label font-bold uppercase tracking-widest text-center bg-green-900/30 text-green-400 border border-green-500/20';
+        status.textContent = '✓ Message sent! I\'ll get back to you soon.';
+        document.getElementById('cf-name').value = '';
+        document.getElementById('cf-email').value = '';
+        document.getElementById('cf-subject').value = '';
+        document.getElementById('cf-message').value = '';
+      } else {
+        throw new Error(data.message || 'Failed');
+      }
+    } catch(e) {
+      status.className = 'mb-4 px-4 py-3 rounded-xl text-sm font-label font-bold uppercase tracking-widest text-center bg-red-900/30 text-red-400 border border-red-500/20';
+      status.textContent = '✗ Something went wrong. Please email me directly.';
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined text-base">send</span> Send Message';
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.project-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.classList.add('text-gray-400');
+    });
+    document.getElementById('panel-' + tab).classList.add('active');
+    const activeBtn = document.getElementById('tab-' + tab);
+    activeBtn.classList.add('active');
+    activeBtn.classList.remove('text-gray-400');
+  }
+
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('hidden');
+  }
+
+  // Active nav highlight on scroll
+  const sections = ['home','skills','projects','education','experience','achievements','certifications','looking-for','contact'];
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  window.addEventListener('scroll', () => {
+    let current = 'home';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && window.scrollY >= el.offsetTop - 120) current = id;
+    });
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href').replace('#','');
+      if (href === current) {
+        link.classList.add('text-[#ff8e80]', 'border-b-2', 'border-[#ff8e80]', 'pb-1');
+        link.classList.remove('text-gray-400');
+      } else {
+        link.classList.remove('text-[#ff8e80]', 'border-b-2', 'border-[#ff8e80]', 'pb-1');
+        link.classList.add('text-gray-400');
+      }
+    });
+  });
+
+  // --- Custom Cursor Animation ---
+  const cursorDot = document.querySelector("[data-cursor-dot]");
+  const cursorOutline = document.querySelector("[data-cursor-outline]");
+  if (window.matchMedia("(pointer: fine)").matches && cursorDot && cursorOutline) {
+    window.addEventListener("mousemove", function (e) {
+      const posX = e.clientX;
+      const posY = e.clientY;
+      cursorDot.style.left = `${posX}px`;
+      cursorDot.style.top = `${posY}px`;
+
+      // Smooth follow for outline
+      cursorOutline.animate({
+        left: `${posX}px`,
+        top: `${posY}px`
+      }, { duration: 500, fill: "forwards" });
+    });
+
+    // Hover states
+    document.querySelectorAll("a, button, input, textarea, .glass-card, .group, .tab-btn").forEach(el => {
+      el.addEventListener("mouseenter", () => {
+        cursorDot.classList.add("cursor-hover");
+        cursorOutline.classList.add("cursor-hover");
+      });
+      el.addEventListener("mouseleave", () => {
+        cursorDot.classList.remove("cursor-hover");
+        cursorOutline.classList.remove("cursor-hover");
+      });
+    });
+  }
+
+  // --- Scroll Reveal Animation ---
+  const observerOptions = { root: null, rootMargin: "0px", threshold: 0.1 };
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("active");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  // We observe major sections dynamically so we don't have to add .reveal to 50+ items in HTML
+  // except for the hero section which we hardcoded in HTML to prevent flickering on load.
+  const sectionsToReveal = document.querySelectorAll(`
+    #skills .bg-surface-container-low,
+    .project-panel .bg-surface-container-low,
+    #education .bg-surface-container-low,
+    #experience .bg-surface-container-low,
+    #achievements .bg-surface-container-low,
+    #certifications .bg-surface-container-low,
+    #looking-for .bg-surface-container-low,
+    #contact .bg-surface-container-low,
+    #contact .lg\\:col-span-2 > div,
+    .cta-inner
+  `);
+  
+  sectionsToReveal.forEach((el, i) => {
+    el.classList.add('reveal');
+    // slight stagger logic based on index
+    if (el.parentElement.classList.contains("grid")) {
+      el.style.transitionDelay = `${(i % 4) * 100}ms`;
+    }
+    observer.observe(el);
+  });
+  
+  // also manually observe the hardcoded hero elements
+  document.querySelectorAll('#home .reveal').forEach(el => observer.observe(el));
+
+  // --- Offline Chatbot Logic ---
+  window.addEventListener('DOMContentLoaded', () => {
+    const chatFab = document.getElementById('chat-fab');
+    const chatWindow = document.getElementById('chat-window');
+    const chatClose = document.getElementById('chat-close');
+    const chatBody = document.getElementById('chat-body');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+
+    // Knowledge Base
+    const botData = {
+      greetings: ["Hello! I am Sam, your Personal AI Assistant. How can I help you?", "Hi there! I am Sam, your AI assistant. Want to know about Som's skills, projects, or experience?"],
+      about: "Som is a BCA graduate with hands-on experience in AWS cloud, DevOps, and data analytics. He is looking for a fresher role in Cloud Engineering, DevOps, or IT Administration. Would you like to know about his skills or projects?",
+      moreAbout: "Som is constantly learning and building! He has hands-on experience with real-world CI/CD pipelines, cloud-native microservices, and cost optimization on AWS.",
+      skills: "Som is skilled in Cloud & DevOps (AWS, Docker, Kubernetes, Terraform, Linux), Programming (Python, SQL, HTML/JS), and AI Tools (Claude, ChatGPT, Groq API).",
+      projects: "Som has built an End-to-End CI/CD Pipeline on AWS, a Cloud-Native Microservices Platform on AWS EKS, and an AWS Cost Optimization Dashboard using Terraform and Lambda.",
+      education: "Som is pursuing his Bachelor of Computer Applications (BCA) from Sri Sri University, Odisha (Aug 2023 - Apr 2026), and completed his I.Com from Rairangpur College.",
+      experience: "Som has completed a Web Developer Internship at Tamizhan Skills and a Python Programming Internship at YBI Foundation.",
+      certifications: "Som holds multiple certifications including Web Development (Internshala), Google Cloud Fundamentals, AWS for Beginners, Python, SQL, and Anthropic's ClaudeCode.",
+      contact: "You can email Som at athgharasom@gmail.com, or use the form at the bottom of the page.",
+      resume: "Here is Som's resume! <br><br> <div style='text-align: center; background: #262626; padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(118,117,117,0.2);'> <span class='material-symbols-outlined' style='font-size: 2rem; color: #ff5b4b;'>description</span><br> <span style='font-size: 0.8rem;'>Som_Athghara_Resume.pdf</span><br><br><div style='display:flex;gap:0.5rem;justify-content:center;margin-top:0.5rem;'> <a href='YOUR_RESUME_LINK_HERE' target='_blank' style='display: inline-block; background: rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.8rem; border-radius: 1rem; text-decoration: none; font-size: 0.75rem; font-weight: bold;'>View</a><a href='YOUR_RESUME_LINK_HERE' download target='_blank' style='display: inline-block; background: #ff5b4b; color: #000; padding: 0.4rem 0.8rem; border-radius: 1rem; text-decoration: none; font-size: 0.75rem; font-weight: bold;'>Download</a></div></div>"
+    };
+
+    const getBotResponse = (query) => {
+      query = query.toLowerCase();
+      
+      if (query.match(/hi|hello|hey|greetings/)) return botData.greetings[0];
+      if (query.match(/more about|more|further|else/)) return botData.moreAbout;
+      if (query.match(/about|who|profile|summary|som|tell me/)) return botData.about;
+      if (query.match(/resume|cv|biodata/)) return botData.resume;
+      if (query.match(/skill|tech|stack|know|language|tool/)) return botData.skills;
+      if (query.match(/project|work|portfolio|resume.ai|jobhunt|pipeline|dashboard/)) return botData.projects;
+      if (query.match(/cert|certificate|certifications/)) return botData.certifications;
+      if (query.match(/education|college|degree|bca|study|university|school/)) return botData.education;
+      if (query.match(/experience|intern|job|work/)) return botData.experience;
+      if (query.match(/contact|email|phone|connect|hire/)) return botData.contact;
+
+      return null;
+    };
+
+    const addMessage = (msg, type, isHtml = false) => {
+      const div = document.createElement('div');
+      div.className = `chat-msg msg-${type}`;
+      if (isHtml) div.innerHTML = msg; else div.innerText = msg;
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    };
+
+    const addSuggestions = () => {
+      const suggestions = ["Tell me about Som", "What are his skills?", "Show me projects", "What certs does he have?", "Show resume"];
+      const container = document.createElement('div');
+      container.className = 'chat-suggestions';
+      container.id = 'chat-suggestions-container';
+      
+      suggestions.forEach(text => {
+        const btn = document.createElement('button');
+        btn.className = 'suggestion-chip';
+        btn.innerText = text;
+        btn.addEventListener('click', () => {
+          chatInput.value = text;
+          handleUserMessage();
+        });
+        container.appendChild(btn);
+      });
+      chatBody.appendChild(container);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    };
+
+    const handleUserMessage = () => {
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      const sugContainer = document.getElementById('chat-suggestions-container');
+      if (sugContainer) sugContainer.remove();
+
+      addMessage(text, 'user', false);
+      chatInput.value = '';
+
+      setTimeout(() => {
+        const response = getBotResponse(text);
+        if (response) {
+          addMessage(response, 'bot', true);
+        } else {
+          addMessage("I'm not sure about that. Please put your query below, so admin can connect with you soon!", 'bot', true);
+          setTimeout(() => {
+            chatWindow.classList.remove('open');
+            window.location.hash = '#contact';
+            document.getElementById('cf-message').focus();
+          }, 2200);
+        }
+      }, 600);
+    };
+
+    chatFab.addEventListener('click', () => {
+      chatWindow.classList.toggle('open');
+      if (chatWindow.classList.contains('open') && chatBody.children.length === 0) {
+        setTimeout(() => {
+          addMessage(botData.greetings[0], 'bot', true);
+          setTimeout(addSuggestions, 400);
+        }, 300);
+      }
+    });
+
+    chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
+    chatSend.addEventListener('click', handleUserMessage);
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserMessage(); });
+  });
+</script>
+
+<!-- External CDNs for 3D UI -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize VanillaTilt on all panels and cards
+    const tiltElements = document.querySelectorAll('.project-panel > div.bg-surface-container-low, #skills > div, #education .bg-surface-container-low, #experience .bg-surface-container-low, #certifications .bg-surface-container-low, #achievements .bg-surface-container-low');
+    if (window.VanillaTilt) {
+      VanillaTilt.init(tiltElements, {
+        max: 5,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.15,
+        scale: 1.02
+      });
+    }
+
+    // 2. Initialize Particles JS 
+    if (window.particlesJS) {
+      particlesJS("particles-js", {
+        "particles": {
+          "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+          "color": { "value": "#ff8e80" },
+          "shape": { "type": "circle" },
+          "opacity": { "value": 0.3, "random": true },
+          "size": { "value": 3, "random": true },
+          "line_linked": { "enable": true, "distance": 150, "color": "#ff8e80", "opacity": 0.2, "width": 1 },
+          "move": { "enable": true, "speed": 1, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+          "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 0.5 } }, "push": { "particles_nb": 4 } }
+        },
+        "retina_detect": true
+      });
+    }
+
+    // 3. Back to Top logic
+    const btt = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        btt.classList.add('show');
+      } else {
+        btt.classList.remove('show');
+      }
+    });
+    btt.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 4. Mascot Sam Logic
+    const sam = document.getElementById('mascot-sam');
+    const targetName = document.getElementById('hero-name');
+    const flipper = sam ? sam.querySelector('.sam-flipper') : null;
+    const tooltip = sam ? sam.querySelector('.sam-tooltip') : null;
+    
+    if (sam && targetName && flipper && tooltip) {
+      setTimeout(() => {
+          // Spawn Logic
+          const rect = targetName.getBoundingClientRect();
+          let currentX = rect.left + rect.width / 2 - 30;
+          let currentY = rect.top + window.scrollY - 70;
+          
+          sam.style.transform = `translate(${currentX}px, ${currentY}px)`;
+          sam.style.opacity = '1';
+          
+          // Click Interaction
+          const funnyMessages = ["Hellloooo!", "Ouch!", "How areeee youuu?", "Leave me pleaseee!", "Stop poking me!", "I'm busy!", "Beep boop!", "Wheeee!"];
+          sam.addEventListener('click', () => {
+            tooltip.textContent = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+            sam.classList.add('waving', 'show-tooltip');
+            setTimeout(() => sam.classList.remove('waving', 'show-tooltip'), 2500);
+          });
+
+          // Scroll Interception (Follows user to new slides)
+          let scrollTimeout;
+          window.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+               if (Math.random() > 0.4) return; // 60% chance to say something funny after scrolling stops
+               const scrollMessages = ["How are you?", "Nice section!", "Looking good!", "Need help?", "Still here!"];
+               tooltip.textContent = scrollMessages[Math.floor(Math.random() * scrollMessages.length)];
+               
+               const maxW = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) - 100;
+               // Fly to center-ish of new viewport
+               const targetY = window.scrollY + window.innerHeight / 2 + (Math.random() * 100 - 50);
+               const targetX = Math.random() > 0.5 ? Math.random() * (maxW * 0.2) + 20 : maxW - (Math.random() * (maxW * 0.2)) - 20;
+               
+               currentX = targetX; currentY = targetY;
+               sam.style.transform = `translate(${currentX}px, ${currentY}px)`;
+               flipper.style.transform = `scaleX(${targetX > maxW / 2 ? 1 : -1})`;
+               
+               sam.classList.add('waving', 'show-tooltip');
+               setTimeout(() => sam.classList.remove('waving', 'show-tooltip'), 3000);
+            }, 900);
+          });
+          
+          // Initial greeting action
+          setTimeout(() => {
+            tooltip.textContent = "Hii!";
+            sam.classList.add('waving', 'show-tooltip');
+            setTimeout(() => {
+              sam.classList.remove('waving', 'show-tooltip');
+              startWandering();
+            }, 3000);
+          }, 3000);
+          
+          function startWandering() {
+            setInterval(() => {
+              if (Math.random() > 0.3) {
+                const maxW = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) - 100;
+                const topBound = window.scrollY + 50;
+                const bottomBound = window.scrollY + window.innerHeight - 100;
+                
+                let targetX = 0;
+                if (Math.random() > 0.5) {
+                   targetX = Math.random() * (maxW * 0.2) + 10;
+                   flipper.style.transform = "scaleX(-1)";
+                } else {
+                   targetX = maxW - (Math.random() * (maxW * 0.2)) - 10;
+                   flipper.style.transform = "scaleX(1)";
+                }
+                
+                const targetY = Math.random() * (bottomBound - topBound) + topBound;
+                
+                currentX = targetX;
+                currentY = targetY;
+                sam.style.transform = `translate(${currentX}px, ${currentY}px)`;
+              } else {
+                sam.classList.add('waving');
+                setTimeout(() => sam.classList.remove('waving'), 2000);
+              }
+            }, 4000);
+          }
+        }, 1000);
+      }
+  });
+</script>
+
+<!-- Chat Widget HTML -->
+<div id="chat-fab" class="chat-fab group" aria-label="Open Chat">
+  <span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div id="chat-window" class="chat-window">
+  <div class="chat-header">
+    <h3>Sam - AI Assistant</h3>
+    <button id="chat-close" class="chat-header-close">
+      <span class="material-symbols-outlined" style="font-size:1.2rem;">close</span>
+    </button>
+  </div>
+  <div id="chat-body" class="chat-body">
+    <!-- Messages go here -->
+  </div>
+  <div class="chat-input-area">
+    <input type="text" id="chat-input" class="chat-input" placeholder="Ask about Som..." autocomplete="off"/>
+    <button id="chat-send" class="btn-send">
+      <span class="material-symbols-outlined" style="font-size:1.1rem; color: #fff;">send</span>
+    </button>
+  </div>
+</div>
+
+<!-- Back to Top HTML -->
+<button id="back-to-top" aria-label="Back to Top">
+  <span class="material-symbols-outlined">arrow_upward</span>
+</button>
+
+<!-- Mascot Sam HTML -->
+<div id="mascot-sam">
+  <div class="sam-scaler">
+    <div class="sam-tooltip">Hii!</div>
+    <div class="sam-bouncer">
+      <div class="sam-flipper">
+        <div class="sam-body">
+          <div class="sam-eye left"></div>
+          <div class="sam-eye right"></div>
+          <div class="sam-hand left"></div>
+          <div class="sam-hand right"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
