@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://atghrasom.tech
+
+# Sitemaps
+Sitemap: https://atghrasom.tech/sitemap.xml
